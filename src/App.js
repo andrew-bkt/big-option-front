@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
 function App() {
   const [symbol, setSymbol] = useState('');
   const [multiplier, setMultiplier] = useState(1);
@@ -14,7 +16,7 @@ function App() {
   const collectData = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/collect_data/', {
+      const response = await axios.post(`${API_URL}/collect_data/`, {
         symbol,
         multiplier,
         timespan,
@@ -30,7 +32,7 @@ function App() {
   const fetchData = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.get(`http://localhost:8000/option_data/?symbol=${symbol}&start_date=${fromDate}&end_date=${toDate}`);
+      const response = await axios.get(`${API_URL}/option_data/?symbol=${symbol}&start_date=${fromDate}&end_date=${toDate}`);
       setOptionData(response.data);
     } catch (error) {
       setMessage('Error fetching data');
