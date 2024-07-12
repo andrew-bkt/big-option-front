@@ -27,8 +27,12 @@ if st.button("Collect Data"):
         "from_date": from_date.isoformat(),
         "to_date": to_date.isoformat()
     }
-    response = requests.post(f"{API_BASE_URL}/collect_data/", json=payload)
-    st.write(response.json())
+    try:
+        response = requests.post(f"{API_BASE_URL}/collect_data/", json=payload)
+        response.raise_for_status()
+        st.success(response.json()["message"])
+    except requests.exceptions.RequestException as e:
+        st.error(f"An error occurred: {str(e)}")
 
 # Fetch Data Section
 st.header("Fetch Option Data")
@@ -43,9 +47,10 @@ if st.button("Fetch Data"):
         "start_date": start_date.isoformat(),
         "end_date": end_date.isoformat()
     }
-    response = requests.get(f"{API_BASE_URL}/option_data/", params=params)
-    if response.status_code == 200:
+    try:
+        response = requests.get(f"{API_BASE_URL}/option_data/", params=params)
+        response.raise_for_status()
         data = response.json()
         st.write(data)
-    else:
-        st.error("Failed to fetch data")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Failed to fetch data: {str(e)}")
